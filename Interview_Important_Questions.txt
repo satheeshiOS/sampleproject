@@ -1,0 +1,146 @@
+SQLITE THREADSAFE:⟫⟫⟫
+
+link:http://www.sqlite.org/c3ref/prepare.html
+
+link:http://stackoverflow.com/questions/4338031/sqlite-and-threading-with-iphone-sdk/20088593#20088593
+
+Sqlite_shutdown();
+Sqlite_config(SQLITE_CONFIG_SERIALIZED);
+sqlite_Initialize();
+
+Run these commands above all the sqlite_open() calls to perform thread safe 
+
+DATA ENCRYPTION:⟫⟫⟫
+
+link:http://code.tutsplus.com/tutorials/securing-and-encrypting-data-on-ios--mobile-21263
+
+KeyChainServiceAPI helps for encryption and decryption which helps to save the small amount of data such as password.
+
+Two Techniques used for data Encryption in iOS:⟫
+
+1.Store Password with Sam Soffes SSKeyChain :
+          
+          an Objective-C wrapper for interacting with the Keychain Services API.
+
+2.Encrypting Data with RNCryptor:
+          
+          a third party encryption library for encryption and decryption.
+
+Framework:⟫
+
+SystemConfiguration.framework,
+
+MobileCoreService.framework,
+
+codetocheckpassword in keychain:⟫  [SSKeychain passwordForService:@"MyPhotos" account:self.usernameTextField.text];
+
+codetosavepassword in keycahin:⟫   [SSKeychain setPassword:self.passwordTextField.text forService:@"MyPhotos" account:self.usernameTextField.text];
+
+Sample Image Encryption code:⟫⟫
+   
+     NSData *imageData = UIImagePNGRepresentation(image);
+
+     NSString *imageName = [NSString stringWithFormat:@"image-%d.securedData", self.photos.count + 1];
+
+     NSData *encryptedImage = [RNEncryptor encryptData:imageData withSettings:kRNCryptorAES256Settings password:@"A_SECRET_PASSWORD" error:nil];
+
+     [encryptedImage writeToFile:[self.filePath stringByAppendingPathComponent:imageName] atomically:YES];
+
+     [self.photos addObject:image];
+
+Sample Image Decryption code:⟫⟫
+
+    UIImage *image = [info objectForKey: UIImagePickerControllerEditedImage];
+ 
+    if (!image) {
+       
+        [info objectForKey: UIImagePickerControllerOriginalImage];
+    
+    }  
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+ 
+    NSError *error = nil;
+    
+    NSArray *contents = [fileManager contentsOfDirectoryAtPath:self.filePath error:&error];
+ 
+    if ([contents count] && !error){
+        
+        NSLog(@"Contents of the user's directory. %@", contents);
+ 
+        for (NSString *fileName in contents) {
+            if ([fileName rangeOfString:@".securedData"].length > 0) {
+                
+                NSData *data = [NSData dataWithContentsOfFile:[self.filePath stringByAppendingPathComponent:fileName]];
+               
+                NSData *decryptedData = [RNDecryptor decryptData:data withSettings:kRNCryptorAES256Settings password:@"A_SECRET_PASSWORD" error:nil];
+               
+                UIImage *image = [UIImage imageWithData:decryptedData];
+                
+                [self.photos addObject:image];
+ 
+            } else {
+                
+                NSLog(@"This file is not secured.");
+            }
+        }
+ 
+    } else if (![contents count]) {
+        if (error) {
+           
+            NSLog(@"Unable to read the contents of the user's directory.");
+
+        } else {
+           
+            NSLog(@"The user's directory is empty.");
+        }
+    }
+}
+
+RUNLOOP:⟫⟫⟫
+
+link:http://stackoverflow.com/questions/12091212/understanding-nsrunloop
+
+ A run loop is an abstraction that (among other things) provides a mechanism to handle system input sources (sockets, ports, files, keyboard, mouse, timers, etc).
+
+ A run loop is an event processing loop that you use to schedule work and coordinate the receipt of incoming events. The purpose of a run loop is to keep your thread busy when there is work to do and put your thread to sleep when there is none.
+
+ A run loop receives events from two different types of sources. Input sources deliver asynchronous events, usually messages from another thread or from a different application. Timer sources deliver synchronous events, occurring at a scheduled time or repeating interval. Both types of source use an application-specific handler routine to process the event when it arrives.
+
+ Sample code:
+
+FUNCTION POINTER IN C:⟫⟫⟫
+
+link:http://stackoverflow.com/questions/1777486/function-pointers-in-objective-c
+
+A function pointer is a variable that stores the address of a function that can later be called through that function pointer. This is useful because functions encapsulate behavior. For instance, every time you need a particular behavior such as drawing a line, instead of writing out a bunch of code, all you need to do is call the function.
+
+sample code:⟫⟫
+
+SEL sel = @selector(myMethod:);
+
+/* Equivalent to [someObject myMethod:Paramater] */
+[someObject performSelector:sel withObject:Parameter]
+
+[self performselector:@Selector(function name)]; this operation doesnot pass any arguments at runtime.
+
+PASSING ARGUMENTS TO THE FUNCTIONS IN POINTER:⟫⟫⟫
+
+link:http://stackoverflow.com/questions/11534372/how-to-pass-float-as-an-argument-at-runtime-in-ios
+
+sample code:⟫⟫
+float hra=34555.444;
+
+float pf=1223.33;
+
+float baseSalary=1222.33
+[self methodName: baseSalary];
+
+
+-(void)methodname:(float *)value;
+
+CATEGORIES:⟫⟫⟫
+
+link:http://rypress.com/tutorials/objective-c/categories.html
+
+Autoresizing Concept:⟫⟫⟫
