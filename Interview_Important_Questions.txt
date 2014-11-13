@@ -134,8 +134,8 @@ float hra=34555.444;
 float pf=1223.33;
 
 float baseSalary=1222.33
-[self methodName: baseSalary];
 
+[self methodName: baseSalary];
 
 -(void)methodname:(float *)value;
 
